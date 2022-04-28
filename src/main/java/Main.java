@@ -69,7 +69,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			try {
-				
+				// bigger breaks console and only shows the end of the string
 				System.out.println("Big test");
 				StringBuffer output = pathTester.findPath(new int[] {2000,2000}, new LinkedList<Integer[]>());
 				System.out.println(output.substring(0, 30000));
@@ -79,6 +79,34 @@ public class Main {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			
+			
+			// big enough for console breaks, still shows the end of the string to show that it works
+			/*
+			try {
+				// bigger breaks console and only shows the end of the string
+				System.out.println("Excessivily Big test");
+				StringBuffer output = pathTester.findPath(new int[] {10000,10000}, new LinkedList<Integer[]>());
+				System.out.println(output.substring(0, 30000));
+				System.out.println(output.substring(30000,60000));
+				System.out.println(output.substring(60000,90000));
+				System.out.println(output.substring(90000,120000));
+				System.out.println(output.substring(120000,150000));
+				System.out.println(output.substring(150000,180000));
+				System.out.println(output.substring(180000,210000));
+				System.out.println(output.substring(210000,240000));
+				System.out.println(output.substring(240000,270000));
+				System.out.println(output.substring(270000,300000));
+				System.out.println(output.substring(300000,315548));
+			//	System.out.println(output);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+			
+			
 
 	}
 

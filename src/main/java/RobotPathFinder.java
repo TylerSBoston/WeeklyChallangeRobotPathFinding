@@ -92,7 +92,6 @@ public class RobotPathFinder {
 		{
 			return new StringBuffer("no valid route");
 		}
-
 	}
 	
 	// recursivly builds string
