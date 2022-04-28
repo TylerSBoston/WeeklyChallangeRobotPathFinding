@@ -16,7 +16,6 @@ public class RobotPathFinder {
 		int[] distance;
 		Integer[] previousTile;
 		public boolean xLarger; // keeps track if x or y is farther from the end point
-		public boolean checked = false; // used for checked tiles and invalid tiles., might not be necessary
 		public Tile(Integer[] location, int[] distance, Integer[] previousTile) {
 			this.location = location;
 			this.distance = distance;
@@ -49,7 +48,6 @@ public class RobotPathFinder {
 		for(Integer[] i : invalidTiles)
 		{
 			Tile t = new Tile(i,gridSize,null);
-			t.checked = true;
 			AllTiles[i[0]][i[1]] = t;
 		}
 		
@@ -75,7 +73,7 @@ public class RobotPathFinder {
 				{
 					Tile currentTile = TilesByDistance.get(smallestDistance).pop();
 					generateTile(currentTile);
-					AllTiles[currentTile.location[0]][currentTile.location[1]].checked = true;
+
 				}
 				else
 				{
@@ -119,7 +117,7 @@ public class RobotPathFinder {
 			//output = " -> "+ Arrays.deepToString(currentTile.location) + output;
 			currentTile = AllTiles[currentTile.previousTile[0]][currentTile.previousTile[1]];
 		}
-		output.insert(0,"Start(0, 0)");
+		output.insert(0,"Start[0, 0]");
 		return output;
 	}
 	
@@ -131,36 +129,32 @@ public class RobotPathFinder {
 		Tile tY;
 		// go farther direction toward end point
 		if(Origin.xLarger)
-		{
-			// checks if destination is valid
-			// first if for both should be unnecessary, will remove during testing, logic in is still necessary
-			if(AllTiles.length - 2 - Origin.location[0] >= 0) {
-				
-				// checks if empty
-				if(AllTiles[Origin.location[0]+1][Origin.location[1]] == null)
-				{
-					tX = new Tile(new Integer[]{Origin.location[0]+1,Origin.location[1]},new int[]{AllTiles.length - 2 - Origin.location[0], AllTiles[0].length - 1 - Origin.location[1]},Origin.location);	
-					AllTiles[Origin.location[0]+1][Origin.location[1]] = tX;
-					if(TilesByDistance.containsKey(tX.TotalDistance())) {
-						// is this necessary? 
-						LinkedList<Tile> temp = TilesByDistance.get(tX.TotalDistance());// is this by value or reference
-						temp.add(tX);
-						TilesByDistance.put(tX.TotalDistance(), temp);
-						//	TilesByDistance.computeIfPresent(tX.TotalDistance(), (k, v) -> v.add(tX));  //One line version not working
-						
-					}
-					else {
-						LinkedList<Tile> temp = new LinkedList<Tile>();// is this by value or reference
-						temp.add(tX);
-						TilesByDistance.put(tX.TotalDistance(), temp);
-					}
-					//dont think this if is strictly necessary, can reduce code by removing it from the optional if
-					smallestDistance = tX.TotalDistance();
+		{	
+			// checks if empty
+			if(AllTiles[Origin.location[0]+1][Origin.location[1]] == null)
+			{
+				tX = new Tile(new Integer[]{Origin.location[0]+1,Origin.location[1]},new int[]{AllTiles.length - 2 - Origin.location[0], AllTiles[0].length - 1 - Origin.location[1]},Origin.location);	
+				AllTiles[Origin.location[0]+1][Origin.location[1]] = tX;
+				if(TilesByDistance.containsKey(tX.TotalDistance())) {
+					// is this necessary? 
+					LinkedList<Tile> temp = TilesByDistance.get(tX.TotalDistance());// is this by value or reference
+					temp.add(tX);
+					TilesByDistance.put(tX.TotalDistance(), temp);
+					//	TilesByDistance.computeIfPresent(tX.TotalDistance(), (k, v) -> v.add(tX));  //One line version not working
 					
 				}
+				else {
+					LinkedList<Tile> temp = new LinkedList<Tile>();// is this by value or reference
+					temp.add(tX);
+					TilesByDistance.put(tX.TotalDistance(), temp);
+				}
+				//dont think this if is strictly necessary, can reduce code by removing it from the optional if
+				smallestDistance = tX.TotalDistance();
 				
 			}
+			// checks if the other direction is inbounds first 
 			if(AllTiles[0].length - 2 - Origin.location[1] >= 0) {
+				// checks if there is a tile there
 				if(AllTiles[Origin.location[0]][Origin.location[1]+1] == null)
 				{
 					tY = new Tile(new Integer[]{Origin.location[0],Origin.location[1]+1},new int[]{AllTiles.length - 1 - Origin.location[0], AllTiles[0].length - 2 - Origin.location[1]},Origin.location);
@@ -184,25 +178,24 @@ public class RobotPathFinder {
 		}
 		else
 		{
-			if(AllTiles[0].length - 2 - Origin.location[1] >= 0) {
-				if(AllTiles[Origin.location[0]][Origin.location[1]+1] == null)
-				{
-					tY = new Tile(new Integer[]{Origin.location[0],Origin.location[1]+1},new int[]{AllTiles.length - 1 - Origin.location[0], AllTiles[0].length - 2 - Origin.location[1]},Origin.location);
-					AllTiles[Origin.location[0]][Origin.location[1]+1] = tY;
-					if(TilesByDistance.containsKey(tY.TotalDistance())) {
-						// is this necessary? 
-						LinkedList<Tile> temp = TilesByDistance.get(tY.TotalDistance());// is this by value or reference
-						temp.add(tY);
-						TilesByDistance.put(tY.TotalDistance(), temp);
-						//	TilesByDistance.computeIfPresent(tX.TotalDistance(), (k, v) -> v.add(tX));  //One line version not working
-					}
-					else {
-						LinkedList<Tile> temp = new LinkedList<Tile>();// is this by value or reference
-						temp.add(tY);
-						TilesByDistance.put(tY.TotalDistance(), temp);
-					}
-					smallestDistance = tY.TotalDistance();
+			
+			if(AllTiles[Origin.location[0]][Origin.location[1]+1] == null)
+			{
+				tY = new Tile(new Integer[]{Origin.location[0],Origin.location[1]+1},new int[]{AllTiles.length - 1 - Origin.location[0], AllTiles[0].length - 2 - Origin.location[1]},Origin.location);
+				AllTiles[Origin.location[0]][Origin.location[1]+1] = tY;
+				if(TilesByDistance.containsKey(tY.TotalDistance())) {
+					// is this necessary? 
+					LinkedList<Tile> temp = TilesByDistance.get(tY.TotalDistance());// is this by value or reference
+					temp.add(tY);
+					TilesByDistance.put(tY.TotalDistance(), temp);
+					//	TilesByDistance.computeIfPresent(tX.TotalDistance(), (k, v) -> v.add(tX));  //One line version not working
 				}
+				else {
+					LinkedList<Tile> temp = new LinkedList<Tile>();// is this by value or reference
+					temp.add(tY);
+					TilesByDistance.put(tY.TotalDistance(), temp);
+				}
+				smallestDistance = tY.TotalDistance();
 			}
 			if(AllTiles.length - 2 - Origin.location[0] >= 0) {
 				if(AllTiles[Origin.location[0]+1][Origin.location[1]] == null)
