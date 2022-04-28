@@ -41,7 +41,7 @@ public class RobotPathFinder {
 		
 	}
 	
-	public String findPath(int[] gridSize, LinkedList<Integer[]> invalidTiles) throws Exception {
+	public StringBuffer findPath(int[] gridSize, LinkedList<Integer[]> invalidTiles) throws Exception {
 		TilesByDistance.clear();
 		
 		AllTiles = new Tile[gridSize[0]][gridSize[1]];
@@ -86,16 +86,18 @@ public class RobotPathFinder {
 		
 		if(smallestDistance == 0)
 		{	
-			return getPreviousStep(AllTiles[AllTiles.length-1][AllTiles[0].length-1]);
+			return generatePath();
 		}
 		else
 		{
-			return "no valid route";
+			return new StringBuffer("no valid route");
 		}
 
 	}
 	
 	// recursivly builds string
+	// stack overflows on big-enough grid
+	// No Longer Used
 	public String getPreviousStep(Tile currentTile)
 	{
 		if(currentTile.location[0] != 0 || currentTile.location[1] != 0)
@@ -105,6 +107,21 @@ public class RobotPathFinder {
 		else{
 			return "start:[0, 0]" ;
 		}
+	}
+	
+	// limited by a string size cap
+	public StringBuffer generatePath() {
+		
+		Tile currentTile = AllTiles[AllTiles.length-1][AllTiles[0].length-1];
+		StringBuffer output = new StringBuffer("");
+		while(currentTile.location[0] != 0 || currentTile.location[1] != 0)
+		{
+			output.insert(0," -> "+ Arrays.deepToString(currentTile.location));
+			//output = " -> "+ Arrays.deepToString(currentTile.location) + output;
+			currentTile = AllTiles[currentTile.previousTile[0]][currentTile.previousTile[1]];
+		}
+		output.insert(0,"Start(0, 0)");
+		return output;
 	}
 	
 	

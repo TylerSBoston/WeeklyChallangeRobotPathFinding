@@ -68,7 +68,17 @@ public class Main {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+			try {
+				
+				System.out.println("Big test");
+				StringBuffer output = pathTester.findPath(new int[] {2000,2000}, new LinkedList<Integer[]>());
+				System.out.println(output.substring(0, 30000));
+				System.out.println(output.substring(30000,59548));
+			//	System.out.println(output);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 	}
 
